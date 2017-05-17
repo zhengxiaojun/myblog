@@ -1,10 +1,13 @@
 # coding=utf-8
-from main import app
 from flask_sqlalchemy import SQLAlchemy
 
 # INIT the sqlalchemy object
 # Will be load the SQLALCHEMY_DATABASE_URL from config.py
-db = SQLAlchemy(app)
+db = SQLAlchemy()
+
+posts_tags = db.Table('posts_tags',
+                      db.Column('post_id', db.String(45), db.ForeignKey('posts.id')),
+                      db.Column('tag_id', db.String(45), db.ForeignKey('tags.id')))
 
 
 class User(db.Model):
@@ -39,13 +42,37 @@ class Post(db.Model):
     # Set the foreign key for Post
     user_id = db.Column(db.String(45), db.ForeignKey('users.id'))
     # Establish contact with Comment's ForeignKey: post_id
-    comments = db.relationship('Comment', backref='posts', lazy='dynamic')
+    comments = db.relationship(
+        'Comment',
+        backref='posts',
+        lazy='dynamic')
+    # many to many: posts <==> tags
+    tags = db.relationship(
+        'Tag',
+        secondary=posts_tags,
+        backref=db.backref('posts', lazy='dynamic'))
 
-    def __init__(self, title):
+    def __init__(self, id, title):
+        self.id = id
         self.title = title
 
     def __repr__(self):
         return "<Model Post `{}`>".format(self.title)
+
+
+class Tag(db.Model):
+    """Represents Proected tags."""
+
+    __tablename__ = 'tags'
+    id = db.Column(db.String(45), primary_key=True)
+    name = db.Column(db.String(255))
+
+    def __init__(self, id, name):
+        self.id = id
+        self.name = name
+
+    def __repr__(self):
+        return "<Model Tag `{}`>".format(self.name)
 
 
 class Comment(db.Model):
@@ -58,7 +85,8 @@ class Comment(db.Model):
     date = db.Column(db.DateTime())
     post_id = db.Column(db.String(45), db.ForeignKey('posts.id'))
 
-    def __init__(self, name):
+    def __init__(self, id, name):
+        self.id = id
         self.name = name
 
     def __repr__(self):
