@@ -1,4 +1,6 @@
 # coding=utf-8
-from fe import app
+from fe import create_app
+from fe.conf.config import DevConfig
 
-app.run(host="0.0.0.0", port=8888)
+app = create_app(DevConfig)
+app.run(host=app.config["HOST"], port=app.config["PORT"])

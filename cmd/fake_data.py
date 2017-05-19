@@ -1,9 +1,9 @@
 # coding=utf-8
-import random
 import datetime
+import random
 from uuid import uuid4
 
-from fe.models import db, User, Tag, Post
+from fe.database.sqlalchemy.models import db, User, Tag, Post
 
 user = User(id=str(uuid4()), username='jmilkfan', password='fanguiju')
 db.session.add(user)

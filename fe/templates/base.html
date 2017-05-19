@@ -1,4 +1,5 @@
 <!DOCTYPE html>
+
 <html>
 
 <head>
@@ -7,7 +8,10 @@
     <meta name="viewport" content="width=device-width,, initial-scale=1">
     <!-- Will be replace the page title -->
     <title>{% block title %}Home{% endblock %}</title>
-    <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+
+     <link rel="stylesheet" href="{{ url_for('static', filename='css/bootstrap.min.css') }}">
+    <!--<link rel="stylesheet" type="text/css" href="{{ ASSET_URL }}">-->
+
     <!-- Macro: `render paginate` -->
     {% macro render_pagination(pagination, endpoint) %}
     <nav>
@@ -20,7 +24,6 @@
                         {% endif %}
                         <span aria-label="true">&laquo;</span>
                     </a>
-                </a>
             </li>
             {% for page in pagination.iter_pages() %}
             {% if page %}
@@ -45,6 +48,8 @@
         </ul>
     </nav>
     {% endmacro %}
+    <!--{% block captcha %}-->
+    <!--{% endblock %}-->
 </head>
 <body>
 <div class="container">
@@ -52,12 +57,46 @@
         <!-- Replace the route function to URL: `/` -->
         <h1><a href="{{ url_for('blog.home')}} ">Jack's Blog</a></h1>
         <p>Welcome to the blog!</p>
+        {% if current_user.is_authenticated %}
+        <div class="column">
+            <div class="col-lg-3">
+                <a href="{{ url_for('blog.new_post') }}" class="btn btn-primary">New</a>
+            </div>
+        </div>
+        {% endif %}
     </div>
+    <!-- Will be get the messages queue from flash() -->
+    {% with messages = get_flashed_messages(with_categories=true) %}
+    {% if messages %}
+    {% for category, message in messages %}
+    <div class="button" class="close" data-dismiss="alert" aria-label="Close">
+        <button type="button" class="close" data-dismiss="alert" aria-label="Close">
+            <span aria-hidden="true">&times;</span>
+        </button>
+        {% if category=="success" %}
+        <p class="help-block" style="color: green">{{ message }}</p>
+        {% endif %}
+    </div>
+    {% endfor%}
+    {% endif %}
+    {% endwith %}
     {% block body %}
     body_content
     {% endblock %}
 </div>
+
 <script src="{{ url_for('static', filename='js/jquery.min.js') }}"></script>
 <script src="{{ url_for('static', filename='js/bootstrap.min.js') }}"></script>
+<!--<script src="{{ ASSET_URL }}"></script>-->
+<!--{#-->
+<!--<script-->
+<!--src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>-->
+<!--#}-->
+<!--{#-->
+<!--<script-->
+<!--src="https://maxcdn.bootstrapcdn.com/bootsrtap/3.3.2/js/bootstrap.min.js"></script>-->
+<!--#}-->
+{% block js %}
+{% endblock %}
 </body>
 </html>
