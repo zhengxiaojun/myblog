@@ -117,7 +117,7 @@ CONF.register_group(CELERY_GROUP)
 CONF.register_opts(CELERY_OPTS, CELERY_GROUP)
 
 # Parse the options
-CONF(args=[], project=DOMAIN,default_config_files=['fe/conf/blog.conf'])
+CONF(args=[], project=DOMAIN, default_config_files=['fe/conf/blog.conf'])
 
 
 class Config(object):
@@ -148,7 +148,7 @@ class Config(object):
 
     # Flask-Assets's configuration
     # NOTE(JmilkFan): Should not compress the CSS/JS when development stage
-    ASSETS_DEBUG = CONF.flask_assets.ASSETS_DEBUG
+    # ASSETS_DEBUG = CONF.flask_assets.ASSETS_DEBUG
 
     # Flask-Cache's configuration
     # NOTE(JmilkFan): Should be set 'null' when development stage
@@ -156,8 +156,8 @@ class Config(object):
 
     # Celery asynchronous task configuration
     # Celery <--> RabbitMQ <--> APP connection
-    CELERY_RESULT_BACKEND = CONF.celery.CELERY_RESULT_BACKEND
-    CELERY_BROKER_URL = CONF.celery.CELERY_BROKER_URL
+    # CELERY_RESULT_BACKEND = CONF.celery.CELERY_RESULT_BACKEND
+    # CELERY_BROKER_URL = CONF.celery.CELERY_BROKER_URL
     # Timed Task configuation of celery task `weekly digest`
     # CELERYBEAT_SCHEDULE = {
     #     'weekly-digest': {
@@ -179,6 +179,8 @@ class DevConfig(Config):
     # MySQL connection
     SQLALCHEMY_DATABASE_URI = 'mysql+pymysql://root:123456@localhost:3306/myblog'
     SQLALCHEMY_TRACK_MODIFICATIONS = True
+
+    BABEL_DEFAULT_LOCALE = 'zh_Hans_CN'
 
     HOST = "0.0.0.0"
     PORT = 8888

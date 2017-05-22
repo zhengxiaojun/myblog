@@ -73,7 +73,7 @@ class User(db.Model):
 
     def __repr__(self):
         """Define the string format for instance of User."""
-        return "<Model User `{}`>".format(self.username)
+        return "{}".format(self.username)
 
     def set_password(self, password):
         """Convert the password to cryptograph via flask-bcrypt"""

@@ -58,10 +58,9 @@ def sidebar_data():
 # Register the view function into blueprint
 @blog_blueprint.route('/')
 @blog_blueprint.route('/<int:page>')
-@cache.cached(timeout=60)
+# @cache.cached(timeout=60)
 def home(page=1):
     """View function for home page"""
-
     posts = Post.query.order_by(
         Post.publish_date.desc()
     ).paginate(page, 10)
@@ -75,7 +74,7 @@ def home(page=1):
 
 
 @blog_blueprint.route('/post/<string:post_id>', methods=('GET', 'POST'))
-@cache.cached(timeout=60, key_prefix=make_cache_key)
+# @cache.cached(timeout=60, key_prefix=make_cache_key)
 def post(post_id):
     """View function for post page"""
 
@@ -171,20 +170,23 @@ def new_post():
 def edit_post(id):
     """View function for edit_post."""
 
-    post = Post.query.get_or_404(id)
     # Ensure the user logged in.
     if not current_user:
         return redirect(url_for('account.login'))
+
+    post = Post.query.get_or_404(id)
+
     # Only the post onwer can be edit this post.
-    if current_user != post.user:
+    if current_user.username != post.user.username:
         return redirect(url_for('blog.post', post_id=id))
+
+    form = PostForm()
+
     # Admin can be edit the post.
     # permission = Permission(UserNeed(post.user.id))
     # if permission.can() or admin_permission.can():
-    form = PostForm()
+    #     form = PostForm()
 
-    if current_user != post.user:
-        abort(403)
     if form.validate_on_submit():
         post.title = form.title.data
         post.text = form.text.data
@@ -195,12 +197,10 @@ def edit_post(id):
         db.session.commit()
         return redirect(url_for('blog.post', post_id=post.id))
     else:
-        abort(403)
-
-    # Still retain the original content, if validate is false.
-    form.title.data = post.title
-    form.text.data = post.text
-    return render_template('edit_post.html', form=form, post=post)
+        # Still retain the original content, if validate is false.
+        form.title.data = post.title
+        form.text.data = post.text
+        return render_template('edit_post.html', form=form, post=post)
 
 
 # NOTE(Jmilk Fan): Use the Flask-Login's current_user object to replace

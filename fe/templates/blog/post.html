@@ -1,6 +1,9 @@
 <!-- Replace the TITLE of template base.html -->
 {% extends "base.html"%}
 {% block title %}{{ post.name }}{% endblock %}
+{% block icon %}
+<img class="nav pull-left img-pad" src="../../static/img/logo.gif" height="50px;"/>
+{% endblock %}
 
 <!-- Replace the BODY of template base.html -->
 {% block body %}
@@ -20,7 +23,7 @@
         </div>
     </div>
     {% endif %}
-    {% if post.user == current_user or admin_permission.can() %}
+    {% if post.user == current_user %}
     <div class="column">
         <div class="col-lg-2">
             <a href="{{ url_for('blog.edit_post', id=post.id) }}" class="btn btn-primary">Edit</a>

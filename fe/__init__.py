@@ -6,8 +6,8 @@ from oslo_config import cfg
 from flask import Flask, redirect, url_for
 from flask_login import current_user
 from flask_principal import identity_loaded, UserNeed, RoleNeed
-# from sqlalchemy import event
 
+# from sqlalchemy import event
 from fe.database.sqlalchemy.models import BrowseVolume, db, Post
 from fe.database.sqlalchemy.models import Reminder, Role, Tag
 from fe.database.sqlalchemy.models import db
@@ -32,7 +32,7 @@ CONF = cfg.CONF
 def create_app(object_name):
     """Create the app instance via `Factory Method`"""
 
-    LOG.info(_LI("Creating the flask application object."))
+    # LOG.info(_LI("Creating the flask application object."))
 
     app = Flask(__name__)
     # Set the config for app instance
@@ -135,3 +135,8 @@ def create_app(object_name):
     app.register_blueprint(account.account_blueprint)
 
     return app
+
+
+from fe.conf.config import DevConfig
+
+app = create_app(DevConfig)
